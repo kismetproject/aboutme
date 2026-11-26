@@ -1,0 +1,1574 @@
+<!doctype html>
+<html lang="en-GB">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta
+    name="description"
+    content="The Still Raining notebook."
+  >
+
+  <title>Still Raining — Notebook</title>
+
+
+  <!-- FONTS -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap"
+    rel="stylesheet"
+  >
+
+
+  <!-- SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <style>
+
+    :root {
+
+      --page-background: #37312e;
+
+      --panel:
+        rgba(20, 21, 20, 0.95);
+
+      --line:
+        rgba(220, 222, 216, 0.15);
+
+      --text:
+        #deddd6;
+
+      --muted:
+        #9b9d97;
+
+      --dim:
+        #686b66;
+
+      --max-width:
+        1160px;
+
+    }
+
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+
+    body {
+
+      margin: 0;
+
+      min-height: 100vh;
+
+      background:
+        var(--page-background);
+
+      color:
+        var(--text);
+
+      font-family:
+        "Courier Prime",
+        "Courier New",
+        monospace;
+
+      line-height: 1.65;
+
+    }
+
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+
+
+    /* ==============================
+       SITE SHELL
+       ============================== */
+
+    .site-shell {
+
+      width:
+        min(
+          calc(100% - 42px),
+          var(--max-width)
+        );
+
+      margin:
+        34px auto;
+
+      background:
+        var(--panel);
+
+      border:
+        1px solid
+        rgba(222, 224, 217, 0.24);
+
+      box-shadow:
+        0 22px 60px
+        rgba(0,0,0,.34);
+
+      position:
+        relative;
+
+      isolation:
+        isolate;
+
+    }
+
+
+    .site-shell::before {
+
+      content: "";
+
+      position:
+        absolute;
+
+      inset:
+        0;
+
+      z-index:
+        -1;
+
+      pointer-events:
+        none;
+
+      opacity:
+        .14;
+
+      background-image:
+
+        linear-gradient(
+          90deg,
+          transparent 0 49.8%,
+          rgba(255,255,255,.018) 50%,
+          transparent 50.2%
+        ),
+
+        linear-gradient(
+          transparent 0 49.8%,
+          rgba(255,255,255,.014) 50%,
+          transparent 50.2%
+        );
+
+      background-size:
+        5px 5px;
+
+    }
+
+
+
+    /* ==============================
+       HEADER
+       ============================== */
+
+    .site-header {
+
+      min-height:
+        78px;
+
+      padding:
+        18px 30px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr auto;
+
+      gap:
+        32px;
+
+      align-items:
+        center;
+
+    }
+
+
+    .brand-title {
+
+      margin:
+        0;
+
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size:
+        clamp(
+          1.35rem,
+          2.1vw,
+          2rem
+        );
+
+      font-weight:
+        400;
+
+      color:
+        #eceae4;
+
+      letter-spacing:
+        .03em;
+
+    }
+
+
+    .brand-subtitle {
+
+      display:
+        block;
+
+      margin-top:
+        2px;
+
+      color:
+        #aaa9a2;
+
+      font-size:
+        .72rem;
+
+      letter-spacing:
+        .24em;
+
+      text-transform:
+        lowercase;
+
+    }
+
+
+
+    /* ==============================
+       NAV
+       ============================== */
+
+    .main-nav {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      color:
+        #c7c5be;
+
+      font-size:
+        .78rem;
+
+      text-transform:
+        uppercase;
+
+      letter-spacing:
+        .08em;
+
+      white-space:
+        nowrap;
+
+    }
+
+
+    .main-nav a {
+
+      padding:
+        7px 12px;
+
+    }
+
+
+    .main-nav a + a::before {
+
+      content:
+        "|";
+
+      color:
+        #777a76;
+
+      margin-right:
+        24px;
+
+      margin-left:
+        -12px;
+
+    }
+
+
+    .main-nav a:hover,
+    .main-nav a:focus-visible,
+    .main-nav a[aria-current="page"] {
+
+      color:
+        #f2f0ea;
+
+      background:
+        rgba(195,199,192,.08);
+
+      outline:
+        none;
+
+    }
+
+
+
+    /* ==============================
+       NOTEBOOK PAGE
+       ============================== */
+
+    .notebook-page {
+
+      padding:
+        32px 30px 52px;
+
+    }
+
+
+    .notebook-intro {
+
+      width:
+        min(
+          100%,
+          720px
+        );
+
+      margin:
+        0 auto;
+
+      padding-bottom:
+        28px;
+
+    }
+
+
+    .notebook-intro h2 {
+
+      margin:
+        0 0 5px;
+
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size:
+        clamp(
+          2rem,
+          4.5vw,
+          3.2rem
+        );
+
+      font-weight:
+        400;
+
+      color:
+        #ebe8e1;
+
+    }
+
+
+    .notebook-intro p {
+
+      max-width:
+        620px;
+
+      margin:
+        0;
+
+      color:
+        var(--muted);
+
+      font-size:
+        .82rem;
+
+    }
+
+
+    .notebook-subline {
+
+      margin-top:
+        10px;
+
+      color:
+        #696c67;
+
+      font-size:
+        .67rem;
+
+      font-style:
+        italic;
+
+    }
+
+
+
+    /* ==============================
+       NOTEBOOK STREAM
+       ============================== */
+
+    .notebook-stream {
+
+      width:
+        min(
+          100%,
+          720px
+        );
+
+      margin:
+        0 auto;
+
+    }
+
+
+    .notebook-entry {
+
+      position:
+        relative;
+
+      padding:
+        0 0 38px;
+
+      margin:
+        0 0 38px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+    }
+
+
+    .entry-date {
+
+      margin-bottom:
+        16px;
+
+      color:
+        #777a75;
+
+      font-size:
+        .65rem;
+
+      letter-spacing:
+        .12em;
+
+      text-transform:
+        uppercase;
+
+    }
+
+
+    .entry-date::after {
+
+      content: "";
+
+      display:
+        block;
+
+      width:
+        100%;
+
+      height:
+        1px;
+
+      margin-top:
+        7px;
+
+      background:
+        linear-gradient(
+          to right,
+          rgba(220,222,216,.2),
+          rgba(220,222,216,.025)
+        );
+
+    }
+
+
+    .entry-title {
+
+      margin:
+        0 0 17px;
+
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size:
+        clamp(
+          1.3rem,
+          3vw,
+          1.65rem
+        );
+
+      line-height:
+        1.3;
+
+      font-weight:
+        400;
+
+      color:
+        #e6e3dc;
+
+    }
+
+
+    .entry-image {
+
+      width:
+        100%;
+
+      max-height:
+        520px;
+
+      object-fit:
+        cover;
+
+      margin:
+        4px 0 22px;
+
+      filter:
+        saturate(76%)
+        brightness(90%);
+
+    }
+
+
+    .entry-content {
+
+      color:
+        #b6b6af;
+
+      font-size:
+        .86rem;
+
+      line-height:
+        1.75;
+
+      overflow-wrap:
+        anywhere;
+
+    }
+
+
+    .entry-content p {
+
+      margin:
+        0 0 1.25em;
+
+    }
+
+
+    .entry-content p:last-child {
+
+      margin-bottom:
+        0;
+
+    }
+
+
+
+    /* ==============================
+       POST TIME
+       ============================== */
+
+    .entry-time {
+
+      margin-top:
+        20px;
+
+      text-align:
+        right;
+
+      color:
+        #626560;
+
+      font-size:
+        .62rem;
+
+      letter-spacing:
+        .05em;
+
+    }
+
+
+
+    /* ==============================
+       LAST ENTRY
+       ============================== */
+
+    .notebook-entry:last-child {
+
+      margin-bottom:
+        0;
+
+      padding-bottom:
+        0;
+
+      border-bottom:
+        0;
+
+    }
+
+
+
+    /* ==============================
+       LOADING / EMPTY
+       ============================== */
+
+    .notebook-message {
+
+      padding:
+        35px 0;
+
+      color:
+        #81847f;
+
+      font-size:
+        .8rem;
+
+    }
+
+
+    .end-mark {
+
+      width:
+        min(
+          100%,
+          720px
+        );
+
+      margin:
+        40px auto 0;
+
+      color:
+        #575a56;
+
+      text-align:
+        center;
+
+      font-size:
+        .72rem;
+
+      letter-spacing:
+        .22em;
+
+    }
+
+
+
+    /* ==============================
+       FOOTER
+       ============================== */
+
+    .site-footer {
+
+      padding:
+        11px 24px;
+
+      background:
+        #101110;
+
+      border-top:
+        1px solid
+        rgba(228,228,221,.16);
+
+      display:
+        grid;
+
+      grid-template-columns:
+        auto auto auto 1fr;
+
+      gap:
+        18px;
+
+      align-items:
+        center;
+
+      color:
+        #787b76;
+
+      font-size:
+        .66rem;
+
+    }
+
+
+    .footer-item {
+
+      white-space:
+        nowrap;
+
+    }
+
+
+    .footer-quote {
+
+      justify-self:
+        end;
+
+      color:
+        #8d8f8a;
+
+      font-style:
+        italic;
+
+      text-align:
+        right;
+
+    }
+
+
+
+    /* ==============================
+       RESPONSIVE
+       ============================== */
+
+    @media (max-width: 800px) {
+
+      .site-shell {
+
+        width:
+          min(
+            calc(100% - 24px),
+            760px
+          );
+
+        margin:
+          18px auto;
+
+      }
+
+
+      .site-header {
+
+        grid-template-columns:
+          1fr;
+
+        gap:
+          14px;
+
+      }
+
+
+      .main-nav {
+
+        flex-wrap:
+          wrap;
+
+      }
+
+
+      .site-footer {
+
+        grid-template-columns:
+          1fr 1fr;
+
+      }
+
+
+      .footer-quote {
+
+        justify-self:
+          start;
+
+        text-align:
+          left;
+
+      }
+
+    }
+
+
+    @media (max-width: 560px) {
+
+      .site-shell {
+
+        width:
+          100%;
+
+        margin:
+          0;
+
+        border-left:
+          0;
+
+        border-right:
+          0;
+
+      }
+
+
+      .site-header,
+      .notebook-page {
+
+        padding-left:
+          15px;
+
+        padding-right:
+          15px;
+
+      }
+
+
+      .notebook-entry {
+
+        padding-bottom:
+          32px;
+
+        margin-bottom:
+          32px;
+
+      }
+
+
+      .site-footer {
+
+        grid-template-columns:
+          1fr;
+
+        gap:
+          8px;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <main class="site-shell">
+
+
+    <!-- HEADER -->
+
+    <header class="site-header">
+
+
+      <a
+        href="index.html"
+        aria-label="Still Raining home"
+      >
+
+        <h1 class="brand-title">
+          Still Raining
+        </h1>
+
+        <span class="brand-subtitle">
+          a personal writing archive
+        </span>
+
+      </a>
+
+
+      <nav
+        class="main-nav"
+        aria-label="Main navigation"
+      >
+
+        <a href="index.html">
+          Home
+        </a>
+
+        <a href="writing.html">
+          Writing
+        </a>
+
+        <a
+          href="notebook.html"
+          aria-current="page"
+        >
+          Notebook
+        </a>
+
+        <a href="about.html">
+          About
+        </a>
+
+      </nav>
+
+
+    </header>
+
+
+
+    <!-- NOTEBOOK -->
+
+    <section class="notebook-page">
+
+
+      <header class="notebook-intro">
+
+        <h2>
+          notebook...
+        </h2>
+
+        <p>
+          miscellaneous thoughts, things i've watched,
+          things i've made, things i've noticed and other
+          scraps that didn't really belong anywhere else.
+        </p>
+
+        <div class="notebook-subline">
+          newest entries first.
+        </div>
+
+      </header>
+
+
+
+      <div
+        class="notebook-stream"
+        id="notebook-stream"
+      >
+
+        <p class="notebook-message">
+          flipping through the pages...
+        </p>
+
+      </div>
+
+
+
+      <div
+        class="end-mark"
+        id="end-mark"
+        hidden
+      >
+        * * *
+      </div>
+
+
+    </section>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="site-footer">
+
+
+      <span class="footer-item">
+
+        last updated:
+
+        <span id="last-updated">
+          —
+        </span>
+
+      </span>
+
+
+      <span class="footer-item">
+
+        currently reading:
+
+        <span id="currently-reading">
+          —
+        </span>
+
+      </span>
+
+
+      <span
+        class="footer-item"
+        id="weather"
+      >
+        weather —
+      </span>
+
+
+      <span class="footer-quote">
+        should've paid more attention in climbing class.
+      </span>
+
+
+    </footer>
+
+
+  </main>
+
+
+
+  <script>
+
+
+    /* ==============================
+       SUPABASE
+       ============================== */
+
+    const SUPABASE_URL =
+      "https://cadljjvyicpgiwlfyigr.supabase.co";
+
+
+    const SUPABASE_KEY =
+      "sb_publishable_PBBvFxgfK9w3U5et1_sM1Q_sUBAtdJp";
+
+
+    const db =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+
+    /* ==============================
+       LOAD NOTEBOOK
+       ============================== */
+
+    async function loadNotebook() {
+
+
+      const stream =
+        document.getElementById(
+          "notebook-stream"
+        );
+
+
+      const {
+        data,
+        error
+      } =
+        await db
+          .from(
+            "notebook_entries"
+          )
+          .select(`
+            id,
+            slug,
+            title,
+            excerpt,
+            content,
+            image_url,
+            created_at,
+            updated_at
+          `)
+          .eq(
+            "published",
+            true
+          )
+          .order(
+            "created_at",
+            {
+              ascending:
+                false
+            }
+          );
+
+
+      if (error) {
+
+
+        console.error(
+          "Could not load notebook:",
+          error
+        );
+
+
+        stream.innerHTML = `
+          <p class="notebook-message">
+            couldn't open the notebook.
+          </p>
+        `;
+
+
+        return;
+
+      }
+
+
+      if (
+        !data ||
+        data.length === 0
+      ) {
+
+
+        stream.innerHTML = `
+          <p class="notebook-message">
+            nothing written here yet...
+          </p>
+        `;
+
+
+        return;
+
+      }
+
+
+      stream.innerHTML =
+        "";
+
+
+      data.forEach(
+        entry => {
+
+
+          const article =
+            document.createElement(
+              "article"
+            );
+
+
+          article.className =
+            "notebook-entry";
+
+
+          article.id =
+            entry.slug;
+
+
+          const title =
+            entry.title
+
+            ? `
+                <h3 class="entry-title">
+                  ${escapeHTML(entry.title)}
+                </h3>
+              `
+
+            : "";
+
+
+          const image =
+            entry.image_url
+
+            ? `
+                <img
+                  class="entry-image"
+                  src="${escapeHTML(entry.image_url)}"
+                  alt=""
+                >
+              `
+
+            : "";
+
+
+          article.innerHTML = `
+
+            <div class="entry-date">
+
+              ${formatLongDate(
+                entry.created_at
+              )}
+
+            </div>
+
+
+            ${title}
+
+
+            ${image}
+
+
+            <div class="entry-content">
+
+              ${formatContent(
+                entry.content ||
+                entry.excerpt ||
+                ""
+              )}
+
+            </div>
+
+
+            <div class="entry-time">
+
+              ${formatTime(
+                entry.created_at
+              )}
+
+            </div>
+
+          `;
+
+
+          stream.appendChild(
+            article
+          );
+
+
+        }
+      );
+
+
+      document
+        .getElementById(
+          "end-mark"
+        )
+        .hidden =
+        false;
+
+    }
+
+
+
+    /* ==============================
+       CONTENT
+       ============================== */
+
+    function formatContent(
+      value
+    ) {
+
+
+      const safe =
+        escapeHTML(
+          value
+        );
+
+
+      return safe
+
+        .split(
+          /\n\s*\n/
+        )
+
+        .map(
+          paragraph =>
+
+            `<p>${
+              paragraph.replaceAll(
+                "\n",
+                "<br>"
+              )
+            }</p>`
+
+        )
+
+        .join("");
+
+    }
+
+
+
+    /* ==============================
+       DATES
+       ============================== */
+
+    function formatLongDate(
+      value
+    ) {
+
+
+      if (!value) {
+        return "";
+      }
+
+
+      return new Intl.DateTimeFormat(
+        "en-GB",
+        {
+
+          weekday:
+            "long",
+
+          day:
+            "2-digit",
+
+          month:
+            "long",
+
+          year:
+            "numeric"
+
+        }
+      )
+      .format(
+        new Date(value)
+      );
+
+    }
+
+
+
+    function formatTime(
+      value
+    ) {
+
+
+      if (!value) {
+        return "";
+      }
+
+
+      return new Intl.DateTimeFormat(
+        "en-GB",
+        {
+
+          hour:
+            "2-digit",
+
+          minute:
+            "2-digit",
+
+          hour12:
+            false
+
+        }
+      )
+      .format(
+        new Date(value)
+      );
+
+    }
+
+
+
+    function formatShortDate(
+      value
+    ) {
+
+
+      if (!value) {
+        return "—";
+      }
+
+
+      return new Intl.DateTimeFormat(
+        "en-GB",
+        {
+
+          day:
+            "2-digit",
+
+          month:
+            "2-digit",
+
+          year:
+            "2-digit"
+
+        }
+      )
+      .format(
+        new Date(value)
+      )
+      .replaceAll(
+        "/",
+        "."
+      );
+
+    }
+
+
+
+    /* ==============================
+       SITE SETTINGS
+       ============================== */
+
+    async function loadSiteSettings() {
+
+
+      const {
+        data,
+        error
+      } =
+        await db
+          .from(
+            "site_settings"
+          )
+          .select("*")
+          .eq(
+            "id",
+            1
+          )
+          .single();
+
+
+      if (
+        error ||
+        !data
+      ) {
+
+        return;
+
+      }
+
+
+      document
+        .getElementById(
+          "currently-reading"
+        )
+        .textContent =
+        data.currently_reading ||
+        "—";
+
+
+      if (
+        data.last_updated
+      ) {
+
+
+        document
+          .getElementById(
+            "last-updated"
+          )
+          .textContent =
+          formatShortDate(
+            data.last_updated
+          );
+
+
+      }
+
+    }
+
+
+
+    /* ==============================
+       WEATHER
+       ============================== */
+
+    async function loadWeather() {
+
+
+      const weather =
+        document.getElementById(
+          "weather"
+        );
+
+
+      try {
+
+
+        const response =
+          await fetch(
+            "/api/weather",
+            {
+              cache:
+                "no-store"
+            }
+          );
+
+
+        if (
+          !response.ok
+        ) {
+
+          throw new Error(
+            "Weather unavailable"
+          );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        weather.textContent =
+          `${data.icon || "☁"} ${data.label}, ${Math.round(data.temperature)}°C`;
+
+
+      }
+
+
+      catch {
+
+
+        weather.textContent =
+          "weather —";
+
+
+      }
+
+    }
+
+
+
+    /* ==============================
+       ESCAPE HTML
+       ============================== */
+
+    function escapeHTML(
+      value
+    ) {
+
+
+      return String(value)
+
+        .replaceAll(
+          "&",
+          "&amp;"
+        )
+
+        .replaceAll(
+          "<",
+          "&lt;"
+        )
+
+        .replaceAll(
+          ">",
+          "&gt;"
+        )
+
+        .replaceAll(
+          '"',
+          "&quot;"
+        )
+
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
+
+    }
+
+
+
+    /* ==============================
+       START
+       ============================== */
+
+    loadNotebook();
+
+    loadSiteSettings();
+
+    loadWeather();
+
+
+  </script>
+
+
+</body>
+
+</html>
