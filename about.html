@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en-GB">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Still Raining — About</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap"
+    rel="stylesheet"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+
+    :root {
+      --background: #37312e;
+      --panel: rgba(20,21,20,.94);
+      --line: rgba(220,222,216,.17);
+      --text: #deddd6;
+      --muted: #9a9c96;
+      --dim: #6f726d;
+      --max-width: 1160px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      background: var(--background);
+      color: var(--text);
+
+      font-family:
+        "Courier Prime",
+        monospace;
+
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .site-shell {
+      width:
+        min(
+          calc(100% - 42px),
+          var(--max-width)
+        );
+
+      margin: 34px auto;
+
+      background: var(--panel);
+
+      border:
+        1px solid
+        rgba(222,224,217,.24);
+
+      box-shadow:
+        0 22px 60px
+        rgba(0,0,0,.34);
+    }
+
+    /* HEADER */
+
+    .site-header {
+      min-height: 78px;
+
+      padding: 18px 30px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      display: grid;
+
+      grid-template-columns:
+        1fr auto;
+
+      align-items: center;
+
+      gap: 32px;
+    }
+
+    .brand-title {
+      margin: 0;
+
+      font-family:
+        "Special Elite",
+        monospace;
+
+      font-size:
+        clamp(1.35rem, 2.1vw, 2rem);
+
+      font-weight: 400;
+
+      color: #eceae4;
+    }
+
+    .brand-subtitle {
+      display: block;
+
+      margin-top: 2px;
+
+      color: #aaa9a2;
+
+      font-size: .72rem;
+
+      letter-spacing: .24em;
+    }
+
+    .main-nav {
+      display: flex;
+
+      color: #c7c5be;
+
+      font-size: .78rem;
+
+      text-transform: uppercase;
+
+      letter-spacing: .08em;
+
+      white-space: nowrap;
+    }
+
+    .main-nav a {
+      padding: 7px 12px;
+    }
+
+    .main-nav a + a::before {
+      content: "|";
+
+      color: #777a76;
+
+      margin-right: 24px;
+      margin-left: -12px;
+    }
+
+    .main-nav a:hover,
+    .main-nav a[aria-current="page"] {
+      color: #f2f0ea;
+
+      background:
+        rgba(195,199,192,.08);
+    }
+
+    /* ABOUT */
+
+    .about-page {
+      width:
+        min(100%, 820px);
+
+      margin: 0 auto;
+
+      padding:
+        44px 30px
+        52px;
+    }
+
+    .about-heading {
+      margin:
+        0 0 6px;
+
+      font-family:
+        "Special Elite",
+        monospace;
+
+      font-size:
+        clamp(2rem, 5vw, 3.2rem);
+
+      font-weight: 400;
+
+      color: #ece9e2;
+    }
+
+    .about-tagline {
+      margin:
+        0 0 35px;
+
+      color:
+        var(--dim);
+
+      font-size:
+        .78rem;
+
+      font-style: italic;
+    }
+
+    .about-section {
+      margin-bottom: 34px;
+    }
+
+    .about-section h3 {
+      margin:
+        0 0 10px;
+
+      font-family:
+        "Special Elite",
+        monospace;
+
+      font-weight: 400;
+
+      font-size: 1.25rem;
+
+      color: #dedbd4;
+    }
+
+    .about-section p {
+      margin:
+        0 0 14px;
+
+      color:
+        #aaa9a3;
+
+      font-size:
+        .86rem;
+    }
+
+    .little-list {
+      margin:
+        14px 0 0;
+
+      padding:
+        15px 18px;
+
+      border-left:
+        2px solid
+        rgba(220,222,216,.15);
+
+      color:
+        #92958f;
+
+      font-size:
+        .8rem;
+    }
+
+    .little-list div + div {
+      margin-top: 6px;
+    }
+
+    .divider {
+      height: 1px;
+
+      margin:
+        30px 0;
+
+      background:
+        var(--line);
+    }
+
+    /* FOOTER */
+
+    .site-footer {
+      padding:
+        11px 24px;
+
+      background:
+        #101110;
+
+      border-top:
+        1px solid
+        rgba(228,228,221,.16);
+
+      display: grid;
+
+      grid-template-columns:
+        auto auto auto 1fr;
+
+      gap: 18px;
+
+      align-items: center;
+
+      color: #787b76;
+
+      font-size: .66rem;
+    }
+
+    .footer-quote {
+      justify-self: end;
+
+      color: #8d8f8a;
+
+      font-style: italic;
+    }
+
+    @media (max-width: 800px) {
+
+      .site-header {
+        grid-template-columns: 1fr;
+
+        gap: 14px;
+      }
+
+      .main-nav {
+        flex-wrap: wrap;
+      }
+
+      .site-footer {
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+      .footer-quote {
+        justify-self: start;
+      }
+    }
+
+    @media (max-width: 560px) {
+
+      .site-shell {
+        width: 100%;
+        margin: 0;
+
+        border-left: 0;
+        border-right: 0;
+      }
+
+      .site-header,
+      .about-page {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      .site-footer {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <main class="site-shell">
+
+    <header class="site-header">
+
+      <a href="index.html">
+
+        <h1 class="brand-title">
+          Still Raining
+        </h1>
+
+        <span class="brand-subtitle">
+          a personal writing archive
+        </span>
+
+      </a>
+
+      <nav class="main-nav">
+
+        <a href="index.html">
+          Home
+        </a>
+
+        <a href="writing.html">
+          Writing
+        </a>
+
+        <a href="notebook.html">
+          Notebook
+        </a>
+
+        <a
+          href="about.html"
+          aria-current="page"
+        >
+          About
+        </a>
+
+      </nav>
+
+    </header>
+
+
+    <section class="about-page">
+
+      <h2 class="about-heading">
+        about...
+      </h2>
+
+      <p class="about-tagline">
+        somewhere to keep all the things i make.
+      </p>
+
+
+      <section class="about-section">
+
+        <h3>
+          hi.
+        </h3>
+
+        <p>
+          Legally, hi, I'm Lowrie (I guess). In terms of a preferred name, I'm still kinda figuring that out. My identity is kind of a mess, lowkey. I kinda like the name Dean? That might be something? Anyway, I like writing stories, characters,
+          scripts and whatever else happens to get stuck
+          in my head for long enough. I'm kind of a geek. I'm a big fan of supernatural, fantasy, and horror themes.
+
+          
+        </p>
+
+        <p>
+          Still Raining is basically my personal corner
+          of the internet, it's part writing archive, part
+          notebook, part collection of things from my brain. It also functions kind of like a portfolio.
+        </p>
+
+      </section>
+
+
+      <div class="divider"></div>
+
+
+      <section class="about-section">
+
+        <h3>
+          what i write...
+        </h3>
+
+        <p>
+          Mostly character-driven fiction, film and
+          television ideas, fan works, scripts and
+          unfinished concepts that may or may not
+          eventually become something bigger.
+        </p>
+
+        <div class="little-list">
+
+          <div>
+            → fiction
+          </div>
+
+          <div>
+            → screenwriting
+          </div>
+
+          <div>
+            → fan works
+          </div>
+
+          <div>
+            → character studies
+          </div>
+
+          <div>
+            → strange little ideas
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <div class="divider"></div>
+
+
+      <section class="about-section">
+
+        <h3>
+          about the site...
+        </h3>
+
+        <p>
+          This site is deliberately small, gloomy and
+          a little old-fashioned.
+        </p>
+
+        <p>
+          No algorithm. Just an archive that
+          can grow slowly over time. Professionalism kind of takes a step back, 
+          because this is a space for me to show authenticity and let people see what I'm really like as a person.
+        </p>
+
+      </section>
+
+    </section>
+
+
+    <footer class="site-footer">
+
+      <span>
+        last updated:
+        <span id="last-updated">—</span>
+      </span>
+
+      <span>
+        currently reading:
+        <span id="currently-reading">—</span>
+      </span>
+
+      <span id="weather">
+        weather —
+      </span>
+
+      <span class="footer-quote">
+        should've paid more attention in climbing class.
+      </span>
+
+    </footer>
+
+  </main>
+
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://cadljjvyicpgiwlfyigr.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_PBBvFxgfK9w3U5et1_sM1Q_sUBAtdJp";
+
+    const db =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    function formatDate(value) {
+
+      if (!value) return "—";
+
+      return new Intl.DateTimeFormat(
+        "en-GB",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit"
+        }
+      )
+      .format(new Date(value))
+      .replaceAll("/", ".");
+
+    }
+
+
+    async function loadSiteSettings() {
+
+      const { data } =
+        await db
+          .from("site_settings")
+          .select("*")
+          .eq("id", 1)
+          .single();
+
+      if (!data) return;
+
+      document
+        .getElementById(
+          "currently-reading"
+        )
+        .textContent =
+        data.currently_reading ||
+        "—";
+
+      document
+        .getElementById(
+          "last-updated"
+        )
+        .textContent =
+        formatDate(
+          data.last_updated
+        );
+
+    }
+
+
+    async function loadWeather() {
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/weather",
+            {
+              cache: "no-store"
+            }
+          );
+
+        const data =
+          await response.json();
+
+        document
+          .getElementById(
+            "weather"
+          )
+          .textContent =
+          `${data.icon || "☁"} ${data.label}, ${Math.round(data.temperature)}°C`;
+
+      }
+
+      catch {
+
+        document
+          .getElementById(
+            "weather"
+          )
+          .textContent =
+          "weather —";
+
+      }
+
+    }
+
+
+    loadSiteSettings();
+    loadWeather();
+
+  </script>
+
+</body>
+
+</html>
