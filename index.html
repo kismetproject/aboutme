@@ -1,0 +1,1385 @@
+<!doctype html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta
+    name="description"
+    content="Still Raining — a personal writing archive."
+  >
+
+  <title>Still Raining — Home</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+
+    :root {
+      --page-background: #37312e;
+
+      --panel: #151615;
+      --panel-glass: rgba(20, 21, 20, 0.94);
+
+      --line-soft: rgba(205, 208, 202, 0.18);
+
+      --text: #dddcd5;
+      --muted: #aaa9a2;
+      --dim: #7f817d;
+
+      --shadow: rgba(0, 0, 0, 0.34);
+
+      --max-width: 1160px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      background: var(--page-background);
+      color: var(--text);
+
+      font-family:
+        "Courier Prime",
+        "Courier New",
+        monospace;
+
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ==========================
+       MAIN PANEL
+       ========================== */
+
+    .site-shell {
+      width: min(calc(100% - 42px), var(--max-width));
+      margin: 34px auto;
+
+      background: var(--panel-glass);
+
+      border:
+        1px solid
+        rgba(222, 224, 217, 0.24);
+
+      box-shadow:
+        0 22px 60px
+        var(--shadow);
+
+      position: relative;
+      isolation: isolate;
+    }
+
+    .site-shell::before {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      z-index: -1;
+      pointer-events: none;
+
+      opacity: 0.18;
+
+      background-image:
+
+        linear-gradient(
+          90deg,
+          transparent 0 49.8%,
+          rgba(255,255,255,.018) 50%,
+          transparent 50.2%
+        ),
+
+        linear-gradient(
+          transparent 0 49.8%,
+          rgba(255,255,255,.016) 50%,
+          transparent 50.2%
+        );
+
+      background-size: 5px 5px;
+      mix-blend-mode: screen;
+    }
+
+    /* ==========================
+       HEADER
+       ========================== */
+
+    .site-header {
+      min-height: 78px;
+
+      padding: 18px 30px;
+
+      border-bottom:
+        1px solid
+        var(--line-soft);
+
+      display: grid;
+
+      grid-template-columns:
+        1fr auto;
+
+      gap: 32px;
+
+      align-items: center;
+    }
+
+    .brand-title {
+      margin: 0;
+
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size:
+        clamp(1.35rem, 2.1vw, 2rem);
+
+      font-weight: 400;
+      letter-spacing: 0.03em;
+
+      color: #eceae4;
+    }
+
+    .brand-subtitle {
+      display: block;
+
+      margin-top: 2px;
+
+      color: var(--muted);
+
+      font-size: 0.72rem;
+      letter-spacing: 0.24em;
+
+      text-transform: lowercase;
+    }
+
+    /* ==========================
+       NAVIGATION
+       ========================== */
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+
+      color: #c7c5be;
+
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+
+      white-space: nowrap;
+    }
+
+    .main-nav a {
+      padding: 7px 12px;
+
+      transition:
+        background 140ms ease,
+        color 140ms ease;
+    }
+
+    .main-nav a + a::before {
+      content: "|";
+
+      color: #777a76;
+
+      margin-right: 24px;
+      margin-left: -12px;
+    }
+
+    .main-nav a:hover,
+    .main-nav a:focus-visible,
+    .main-nav a[aria-current="page"] {
+      color: #f2f0ea;
+
+      background:
+        rgba(195, 199, 192, 0.08);
+
+      outline: none;
+    }
+
+    /* ==========================
+       HOME GRID
+       ========================== */
+
+    .home-grid {
+      padding: 22px 24px 0;
+
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        270px;
+
+      gap: 14px;
+    }
+
+    .welcome-block,
+    .player-card,
+    .archive-banner,
+    .recent-section {
+      border:
+        1px solid
+        rgba(220, 222, 216, 0.18);
+
+      background:
+        rgba(7, 8, 8, 0.16);
+    }
+
+    /* ==========================
+       WELCOME
+       ========================== */
+
+    .welcome-block {
+      min-width: 0;
+    }
+
+    .welcome-media {
+      aspect-ratio: 16 / 7.15;
+
+      overflow: hidden;
+
+      background: #252725;
+    }
+
+    .welcome-media img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      filter:
+        grayscale(18%)
+        saturate(70%)
+        brightness(88%)
+        contrast(96%);
+    }
+
+    .welcome-copy {
+      padding: 8px 18px 14px;
+
+      display: flex;
+
+      gap: 16px;
+
+      align-items: baseline;
+
+      flex-wrap: wrap;
+    }
+
+    .welcome-copy h2 {
+      margin: 0;
+
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size:
+        clamp(1.45rem, 2.5vw, 2.15rem);
+
+      font-weight: 400;
+
+      color: #e6e3dc;
+    }
+
+    .welcome-copy p {
+      margin: 0;
+
+      color: var(--muted);
+
+      font-size: 0.8rem;
+    }
+
+    /* ==========================
+       NOW PLAYING
+       ========================== */
+
+    .player-card {
+      padding: 16px;
+      align-self: stretch;
+    }
+
+    .section-kicker {
+      margin: 0 0 12px;
+
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size: 1.1rem;
+      font-weight: 400;
+
+      color: #dfddd5;
+    }
+
+    .player-cover {
+      width: min(100%, 210px);
+
+      aspect-ratio: 1;
+
+      margin: 0 auto 12px;
+
+      object-fit: cover;
+
+      border:
+        1px solid
+        rgba(219, 220, 213, 0.18);
+
+      filter:
+        grayscale(18%)
+        saturate(60%)
+        contrast(92%);
+    }
+
+    .track-title {
+      margin: 0;
+
+      font-size: 0.94rem;
+
+      color: #e4e2da;
+    }
+
+    .track-artist {
+      margin: 2px 0 12px;
+
+      color: var(--muted);
+
+      font-size: 0.76rem;
+    }
+
+    .progress {
+      height: 3px;
+
+      background: #4a4d49;
+
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+
+      width: 35%;
+      height: 100%;
+
+      background: #b9bbb4;
+    }
+
+    .time-row {
+      display: flex;
+
+      justify-content: space-between;
+
+      margin-top: 5px;
+
+      color: #858782;
+
+      font-size: 0.68rem;
+    }
+
+    .player-controls {
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+
+      gap: 10px;
+
+      margin-top: 10px;
+    }
+
+    .player-controls button {
+      width: 34px;
+      height: 34px;
+
+      border:
+        1px solid
+        rgba(221, 223, 216, 0.2);
+
+      background:
+        rgba(235, 235, 228, 0.05);
+
+      color: #dbdad4;
+
+      font: inherit;
+
+      cursor: pointer;
+    }
+
+    .player-controls button:hover {
+      background:
+        rgba(235, 235, 228, 0.1);
+    }
+
+    /* ==========================
+       ARCHIVE BANNER
+       ========================== */
+
+    .archive-banner {
+      grid-column: 1 / -1;
+
+      min-height: 132px;
+
+      overflow: hidden;
+
+      background-image:
+
+        linear-gradient(
+          90deg,
+          rgba(9,10,10,.12) 0 42%,
+          rgba(9,10,10,.20) 55%,
+          rgba(9,10,10,.42) 100%
+        ),
+
+        url("assets/archive-banner.jpg");
+
+      background-size: cover;
+      background-position: center;
+    }
+
+    .archive-banner a {
+      width: 100%;
+      min-height: 132px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      justify-content: center;
+
+      padding: 24px 42px;
+
+      color: #eeeeea;
+    }
+
+    .archive-banner strong {
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size:
+        clamp(1.35rem, 2.6vw, 2rem);
+
+      font-weight: 400;
+    }
+
+    .archive-banner span {
+      margin-top: 5px;
+
+      color: #c5c4bd;
+
+      font-size: 0.8rem;
+    }
+
+    /* ==========================
+       RECENT PROJECTS
+       ========================== */
+
+    .recent-section {
+      grid-column: 1 / -1;
+
+      padding: 14px 14px 10px;
+    }
+
+    .section-heading-row {
+      display: flex;
+
+      align-items: baseline;
+      justify-content: space-between;
+
+      gap: 24px;
+
+      border-bottom:
+        1px solid
+        var(--line-soft);
+
+      padding-bottom: 7px;
+
+      margin-bottom: 10px;
+    }
+
+    .section-heading-row h2 {
+      margin: 0;
+
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size: 1.15rem;
+
+      font-weight: 400;
+
+      color: #dedcd5;
+    }
+
+    .section-heading-row a {
+      color: #8f918c;
+
+      font-size: 0.72rem;
+    }
+
+    .recent-grid {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 18px;
+    }
+
+    .project-card {
+      display: grid;
+
+      grid-template-columns:
+        175px
+        minmax(0, 1fr);
+
+      gap: 14px;
+
+      min-width: 0;
+    }
+
+    .project-card img {
+      width: 100%;
+
+      aspect-ratio: 1;
+
+      object-fit: cover;
+
+      border:
+        1px solid
+        rgba(222,222,215,.17);
+
+      filter:
+        grayscale(15%)
+        saturate(72%)
+        brightness(88%);
+    }
+
+    .project-copy {
+      padding: 6px 8px 6px 0;
+
+      display: flex;
+
+      flex-direction: column;
+
+      min-width: 0;
+    }
+
+    .project-type {
+      color: #7f817c;
+
+      font-size: 0.67rem;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.12em;
+    }
+
+    .project-copy h3 {
+      margin: 6px 0 8px;
+
+      font-family:
+        "Special Elite",
+        "Courier Prime",
+        monospace;
+
+      font-size: 1.02rem;
+
+      font-weight: 400;
+
+      color: #e0ded7;
+    }
+
+    .project-copy p {
+      margin: 0 0 12px;
+
+      color: #9d9f99;
+
+      font-size: 0.78rem;
+    }
+
+    .read-more {
+      margin-top: auto;
+
+      width: fit-content;
+
+      color: #c0c1bb;
+
+      border-bottom:
+        1px solid
+        #62645f;
+
+      font-size: 0.76rem;
+    }
+
+    .loading-message {
+      color: #888a85;
+
+      font-size: 0.78rem;
+
+      padding: 12px 0;
+    }
+
+    /* ==========================
+       FOOTER
+       ========================== */
+
+    .site-footer {
+      margin-top: 15px;
+
+      padding: 11px 24px;
+
+      background: #101110;
+
+      border-top:
+        1px solid
+        rgba(228,228,221,.16);
+
+      display: grid;
+
+      grid-template-columns:
+        auto
+        auto
+        auto
+        1fr;
+
+      gap: 18px;
+
+      align-items: center;
+
+      color: #787b76;
+
+      font-size: 0.66rem;
+    }
+
+    .footer-item {
+      white-space: nowrap;
+    }
+
+    .footer-quote {
+      justify-self: end;
+
+      color: #8d8f8a;
+
+      font-style: italic;
+
+      text-align: right;
+    }
+
+    /* ==========================
+       RESPONSIVE
+       ========================== */
+
+    @media (max-width: 900px) {
+
+      .site-shell {
+        width:
+          min(calc(100% - 24px), 760px);
+
+        margin: 18px auto;
+      }
+
+      .site-header {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .main-nav {
+        flex-wrap: wrap;
+      }
+
+      .home-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .archive-banner,
+      .recent-section {
+        grid-column: 1;
+      }
+
+      .recent-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .site-footer {
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+      .footer-quote {
+        justify-self: start;
+
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 560px) {
+
+      .site-shell {
+        width: 100%;
+        margin: 0;
+      }
+
+      .site-header,
+      .home-grid {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .welcome-media {
+        aspect-ratio: 4 / 3;
+      }
+
+      .project-card {
+        grid-template-columns:
+          110px
+          minmax(0, 1fr);
+      }
+
+      .site-footer {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <main class="site-shell">
+
+    <!-- HEADER -->
+
+    <header class="site-header">
+
+      <a
+        href="index.html"
+        class="brand"
+        aria-label="Still Raining home"
+      >
+
+        <h1 class="brand-title">
+          Still Raining
+        </h1>
+
+        <span class="brand-subtitle">
+          a personal writing archive
+        </span>
+
+      </a>
+
+
+      <nav
+        class="main-nav"
+        aria-label="Main navigation"
+      >
+
+        <a
+          href="index.html"
+          aria-current="page"
+        >
+          Home
+        </a>
+
+        <a href="writing.html">
+          Writing
+        </a>
+
+        <a href="notebook.html">
+          Notebook
+        </a>
+
+        <a href="about.html">
+          About
+        </a>
+
+      </nav>
+
+    </header>
+
+
+    <div class="home-grid">
+
+      <!-- WELCOME -->
+
+      <section class="welcome-block">
+
+        <div class="welcome-media">
+
+          <img
+            src="assets/welcome.gif"
+            alt="Flowing water beside a weathered wooden plank"
+          >
+
+        </div>
+
+
+        <div class="welcome-copy">
+
+          <h2>
+            welcome...
+          </h2>
+
+          <p>
+            a collection of writing, thoughts, and other things.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- NOW PLAYING -->
+
+      <aside class="player-card">
+
+        <h2 class="section-kicker">
+          now playing...
+        </h2>
+
+
+        <img
+          class="player-cover"
+          src="assets/now-playing.jpeg"
+          alt="Now playing artwork"
+        >
+
+
+        <p
+          class="track-title"
+          id="track-title"
+        >
+          —
+        </p>
+
+
+        <p
+          class="track-artist"
+          id="track-artist"
+        >
+          —
+        </p>
+
+
+        <div class="progress">
+          <span></span>
+        </div>
+
+
+        <div class="time-row">
+
+          <span>1:04</span>
+
+          <span>2:40</span>
+
+        </div>
+
+
+        <div class="player-controls">
+
+          <button
+            type="button"
+            aria-label="Previous track"
+          >
+            ◀
+          </button>
+
+          <button
+            type="button"
+            aria-label="Play or pause"
+          >
+            Ⅱ
+          </button>
+
+          <button
+            type="button"
+            aria-label="Next track"
+          >
+            ▶
+          </button>
+
+        </div>
+
+      </aside>
+
+
+      <!-- ARCHIVE -->
+
+      <section class="archive-banner">
+
+        <a href="writing.html">
+
+          <strong>
+            enter the archive →
+          </strong>
+
+          <span>
+            stories, projects, fragments
+          </span>
+
+        </a>
+
+      </section>
+
+
+      <!-- RECENT PROJECTS -->
+
+      <section class="recent-section">
+
+        <div class="section-heading-row">
+
+          <h2>
+            recent projects...
+          </h2>
+
+          <a href="writing.html">
+            view all →
+          </a>
+
+        </div>
+
+
+        <div
+          class="recent-grid"
+          id="recent-projects"
+        >
+
+          <p class="loading-message">
+            loading recent projects...
+          </p>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer class="site-footer">
+
+      <span class="footer-item">
+
+        last updated:
+
+        <span id="last-updated">
+          —
+        </span>
+
+      </span>
+
+
+      <span class="footer-item">
+
+        currently reading:
+
+        <span id="currently-reading">
+          —
+        </span>
+
+      </span>
+
+
+      <span
+        class="footer-item"
+        id="weather"
+      >
+        weather —
+      </span>
+
+
+      <span class="footer-quote">
+        should've paid more attention in climbing class.
+      </span>
+
+    </footer>
+
+  </main>
+
+
+  <script>
+
+    /* ================================
+       SUPABASE
+       ================================ */
+
+    const SUPABASE_URL =
+      "https://cadljjvyicpgiwlfyigr.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_PBBvFxgfK9w3U5et1_sM1Q_sUBAtdJp";
+
+    const db =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* ================================
+       SITE SETTINGS
+       ================================ */
+
+    async function loadSiteSettings() {
+
+      const { data, error } =
+        await db
+          .from("site_settings")
+          .select("*")
+          .eq("id", 1)
+          .single();
+
+
+      if (error) {
+
+        console.error(
+          "Could not load site settings:",
+          error
+        );
+
+        return;
+      }
+
+
+      document
+        .getElementById("currently-reading")
+        .textContent =
+        data.currently_reading || "—";
+
+
+      document
+        .getElementById("track-title")
+        .textContent =
+        data.current_track || "—";
+
+
+      document
+        .getElementById("track-artist")
+        .textContent =
+        data.current_artist || "—";
+
+
+      if (data.last_updated) {
+
+        const date =
+          new Date(
+            data.last_updated +
+            "T00:00:00"
+          );
+
+
+        const formattedDate =
+          new Intl.DateTimeFormat(
+            "en-GB",
+            {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit"
+            }
+          )
+          .format(date)
+          .replaceAll("/", ".");
+
+
+        document
+          .getElementById("last-updated")
+          .textContent =
+          formattedDate;
+      }
+
+    }
+
+
+    /* ================================
+       RECENT PROJECTS
+       ================================ */
+
+    async function loadRecentProjects() {
+
+      const container =
+        document.getElementById(
+          "recent-projects"
+        );
+
+
+      const { data, error } =
+        await db
+          .from("writing")
+          .select(`
+            id,
+            slug,
+            title,
+            project_type,
+            summary,
+            cover_url,
+            updated_at
+          `)
+          .eq("published", true)
+          .order(
+            "updated_at",
+            {
+              ascending: false
+            }
+          )
+          .limit(2);
+
+
+      if (error) {
+
+        console.error(
+          "Could not load recent projects:",
+          error
+        );
+
+
+        container.innerHTML = `
+          <p class="loading-message">
+            recent projects couldn't be loaded.
+          </p>
+        `;
+
+        return;
+      }
+
+
+      if (!data || data.length === 0) {
+
+        container.innerHTML = `
+          <p class="loading-message">
+            nothing here yet...
+          </p>
+        `;
+
+        return;
+      }
+
+
+      container.innerHTML = "";
+
+
+      const featuredImages = [
+        "assets/featured-1.jpg",
+        "assets/featured-2.png"
+      ];
+
+
+      data.forEach((project, index) => {
+
+        const article =
+          document.createElement(
+            "article"
+          );
+
+
+        article.className =
+          "project-card";
+
+
+        const cover =
+          featuredImages[index];
+
+
+        article.innerHTML = `
+
+          <img
+            src="${escapeHTML(cover)}"
+            alt=""
+          >
+
+          <div class="project-copy">
+
+            <span class="project-type">
+              ${
+                escapeHTML(
+                  project.project_type ||
+                  "project"
+                )
+              }
+            </span>
+
+            <h3>
+              ${
+                escapeHTML(
+                  project.title
+                )
+              }
+            </h3>
+
+            <p>
+              ${
+                escapeHTML(
+                  project.summary ||
+                  ""
+                )
+              }
+            </p>
+
+            <a
+              class="read-more"
+              href="writing.html"
+            >
+              read more →
+            </a>
+
+          </div>
+        `;
+
+
+        container.appendChild(article);
+
+      });
+
+    }
+
+
+    /* ================================
+       HTML ESCAPING
+       ================================ */
+
+    function escapeHTML(value) {
+
+      return String(value)
+
+        .replaceAll(
+          "&",
+          "&amp;"
+        )
+
+        .replaceAll(
+          "<",
+          "&lt;"
+        )
+
+        .replaceAll(
+          ">",
+          "&gt;"
+        )
+
+        .replaceAll(
+          '"',
+          "&quot;"
+        )
+
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
+    }
+
+
+    /* ================================
+       WEATHER
+       ================================ */
+
+    async function loadWeather() {
+
+      const weatherEl =
+        document.getElementById(
+          "weather"
+        );
+
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/weather",
+            {
+              cache: "no-store"
+            }
+          );
+
+
+        if (!response.ok) {
+          throw new Error(
+            "Weather unavailable"
+          );
+        }
+
+
+        const data =
+          await response.json();
+
+
+        weatherEl.textContent =
+          `${data.icon || "☁"} ${data.label}, ${Math.round(data.temperature)}°C`;
+
+      }
+
+
+      catch {
+
+        weatherEl.textContent =
+          "weather —";
+
+      }
+
+    }
+
+
+    /* ================================
+       START PAGE
+       ================================ */
+
+    loadSiteSettings();
+
+    loadRecentProjects();
+
+    loadWeather();
+
+  </script>
+
+</body>
+
+</html>
