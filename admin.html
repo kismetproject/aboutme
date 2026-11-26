@@ -1,0 +1,2918 @@
+<!doctype html>
+<html lang="en-GB">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Still Raining — Admin</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap"
+    rel="stylesheet"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      background: #37312e;
+      color: #deddd6;
+
+      font-family:
+        "Courier Prime",
+        monospace;
+
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .admin-shell {
+      width: min(calc(100% - 30px), 860px);
+      margin: 40px auto;
+
+      background: rgba(20,21,20,.97);
+
+      border:
+        1px solid
+        rgba(220,222,216,.2);
+
+      box-shadow:
+        0 20px 50px
+        rgba(0,0,0,.35);
+    }
+
+    /* HEADER */
+
+    .admin-header {
+      padding: 22px 25px;
+
+      border-bottom:
+        1px solid
+        rgba(220,222,216,.16);
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+    }
+
+    .admin-header h1 {
+      margin: 0;
+
+      font-family:
+        "Special Elite",
+        monospace;
+
+      font-size: 1.7rem;
+      font-weight: 400;
+    }
+
+    .subtitle {
+      margin-top: 3px;
+
+      color: #858883;
+
+      font-size: .7rem;
+      letter-spacing: .1em;
+    }
+
+    .view-site {
+      color: #858883;
+      font-size: .7rem;
+    }
+
+    .view-site:hover {
+      color: #deddd6;
+    }
+
+    main {
+      padding: 25px;
+    }
+
+    #login-panel,
+    #dashboard {
+      display: none;
+    }
+
+    /* TOP BAR */
+
+    .admin-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 15px;
+
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+
+      border-bottom:
+        1px solid
+        rgba(220,222,216,.12);
+
+      color: #777a75;
+      font-size: .7rem;
+    }
+
+    /* MAIN TABS */
+
+    .admin-tabs {
+      display: flex;
+
+      margin-bottom: 18px;
+
+      border-bottom:
+        1px solid
+        rgba(220,222,216,.18);
+    }
+
+    .tab-button,
+    .mode-button {
+      border: 0;
+
+      background: #111210;
+      color: #858883;
+
+      cursor: pointer;
+
+      font-family:
+        "Courier Prime",
+        monospace;
+    }
+
+    .tab-button {
+      padding: 10px 17px;
+
+      border-top:
+        1px solid
+        rgba(220,222,216,.15);
+
+      border-left:
+        1px solid
+        rgba(220,222,216,.15);
+    }
+
+    .tab-button:last-child {
+      border-right:
+        1px solid
+        rgba(220,222,216,.15);
+    }
+
+    .tab-button.active {
+      background: #272824;
+      color: #eceae4;
+    }
+
+    .admin-panel {
+      display: none;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    /* CREATE / MANAGE */
+
+    .mode-tabs {
+      display: flex;
+
+      gap: 6px;
+
+      margin-bottom: 25px;
+    }
+
+    .mode-button {
+      padding: 7px 11px;
+
+      border:
+        1px solid
+        rgba(220,222,216,.14);
+
+      font-size: .68rem;
+    }
+
+    .mode-button.active {
+      background: #252723;
+      color: #e4e2dc;
+    }
+
+    .mode-panel {
+      display: none;
+    }
+
+    .mode-panel.active {
+      display: block;
+    }
+
+    .panel-title {
+      margin: 0 0 18px;
+
+      font-family:
+        "Special Elite",
+        monospace;
+
+      font-size: 1.3rem;
+      font-weight: 400;
+    }
+
+    /* FORMS */
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field-row {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 15px;
+    }
+
+    label {
+      display: block;
+
+      margin-bottom: 5px;
+
+      color: #9b9d97;
+
+      font-size: .72rem;
+    }
+
+    .hint {
+      margin-top: 5px;
+
+      color: #666964;
+
+      font-size: .64rem;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+
+      border:
+        1px solid
+        rgba(220,222,216,.18);
+
+      background: #101110;
+      color: #deddd6;
+
+      padding: 10px;
+
+      font-family:
+        "Courier Prime",
+        monospace;
+
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color:
+        rgba(220,222,216,.46);
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .notebook-content {
+      min-height: 280px;
+    }
+
+    .writing-summary {
+      min-height: 100px;
+    }
+
+    .writing-content {
+      min-height: 500px;
+    }
+
+    /* CHECKBOX */
+
+    .check-row {
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+
+      margin:
+        6px 0
+        20px;
+
+      color: #aaa9a2;
+
+      font-size: .78rem;
+    }
+
+    .check-row input {
+      width: auto;
+    }
+
+    /* BUTTONS */
+
+    button {
+      border:
+        1px solid
+        rgba(220,222,216,.24);
+
+      background: #222421;
+      color: #deddd6;
+
+      padding: 9px 14px;
+
+      font-family:
+        "Courier Prime",
+        monospace;
+
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2d302c;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: wait;
+    }
+
+    .primary-button {
+      width: 100%;
+
+      padding: 12px;
+
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .logout-button {
+      padding: 5px 9px;
+      font-size: .68rem;
+    }
+
+    .danger-button {
+      width: 100%;
+
+      margin-top: 9px;
+
+      border-color:
+        rgba(179,117,110,.35);
+
+      background:
+        rgba(93,46,43,.18);
+
+      color:
+        #c8a5a1;
+    }
+
+    .danger-button:hover {
+      background:
+        rgba(93,46,43,.3);
+    }
+
+    /* EXISTING ENTRIES */
+
+    .entry-picker {
+      margin-bottom: 25px;
+    }
+
+    .entry-picker select {
+      margin-bottom: 8px;
+    }
+
+    .entry-state {
+      color: #6e716c;
+
+      font-size: .67rem;
+    }
+
+    .manage-placeholder {
+      padding: 25px 0;
+
+      color: #777a75;
+
+      font-size: .78rem;
+    }
+
+    .edit-form {
+      display: none;
+    }
+
+    .edit-form.visible {
+      display: block;
+    }
+
+    .edit-meta {
+      margin-bottom: 20px;
+
+      padding:
+        9px 11px;
+
+      border-left:
+        2px solid
+        rgba(220,222,216,.14);
+
+      color: #6f726d;
+
+      font-size: .67rem;
+    }
+
+    /* MESSAGES */
+
+    .message {
+      min-height: 1.2em;
+
+      margin-top: 14px;
+
+      color: #a7aaa4;
+
+      font-size: .75rem;
+    }
+
+    .success {
+      color: #b8c1ad;
+    }
+
+    .error {
+      color: #c9a6a2;
+    }
+
+    .form-divider {
+      height: 1px;
+
+      margin: 25px 0;
+
+      background:
+        rgba(220,222,216,.11);
+    }
+
+    @media (max-width: 600px) {
+
+      .admin-shell {
+        width: 100%;
+
+        min-height: 100vh;
+
+        margin: 0;
+
+        border-left: 0;
+        border-right: 0;
+      }
+
+      .admin-header,
+      main {
+        padding:
+          18px 15px;
+      }
+
+      .admin-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+
+      .writing-content {
+        min-height: 380px;
+      }
+
+      .mode-tabs {
+        flex-wrap: wrap;
+      }
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <div class="admin-shell">
+
+
+    <header class="admin-header">
+
+      <div>
+
+        <h1>
+          Still Raining
+        </h1>
+
+        <div class="subtitle">
+          administration
+        </div>
+
+      </div>
+
+      <a
+        class="view-site"
+        href="index.html"
+      >
+        view site →
+      </a>
+
+    </header>
+
+
+    <main>
+
+
+      <!-- LOGIN -->
+
+      <section id="login-panel">
+
+        <h2 class="panel-title">
+          sign in...
+        </h2>
+
+        <form id="login-form">
+
+          <div class="field">
+
+            <label for="email">
+              email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+          <div class="field">
+
+            <label for="password">
+              password
+            </label>
+
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            >
+
+          </div>
+
+          <button
+            class="primary-button"
+            type="submit"
+          >
+            log in
+          </button>
+
+          <div
+            class="message"
+            id="login-message"
+          ></div>
+
+        </form>
+
+      </section>
+
+
+
+      <!-- DASHBOARD -->
+
+      <section id="dashboard">
+
+
+        <div class="admin-bar">
+
+          <span>
+            logged in
+          </span>
+
+          <button
+            class="logout-button"
+            id="logout-button"
+            type="button"
+          >
+            log out
+          </button>
+
+        </div>
+
+
+
+        <!-- MAIN TABS -->
+
+        <div class="admin-tabs">
+
+          <button
+            class="tab-button active"
+            data-tab="notebook"
+            type="button"
+          >
+            notebook
+          </button>
+
+          <button
+            class="tab-button"
+            data-tab="writing"
+            type="button"
+          >
+            writing
+          </button>
+
+        </div>
+
+
+
+        <!-- =====================================
+             NOTEBOOK
+             ===================================== -->
+
+        <section
+          class="admin-panel active"
+          id="notebook-panel"
+        >
+
+
+          <div class="mode-tabs">
+
+            <button
+              class="mode-button active"
+              data-group="notebook"
+              data-mode="new"
+              type="button"
+            >
+              new entry
+            </button>
+
+            <button
+              class="mode-button"
+              data-group="notebook"
+              data-mode="manage"
+              type="button"
+            >
+              manage existing
+            </button>
+
+          </div>
+
+
+
+          <!-- NEW NOTEBOOK -->
+
+          <div
+            class="mode-panel active"
+            id="notebook-new"
+          >
+
+            <h2 class="panel-title">
+              new notebook entry...
+            </h2>
+
+
+            <form id="notebook-form">
+
+              <div class="field">
+
+                <label for="notebook-title">
+                  title
+                </label>
+
+                <input
+                  id="notebook-title"
+                  type="text"
+                  placeholder="optional"
+                >
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="notebook-content">
+                  post
+                </label>
+
+                <textarea
+                  class="notebook-content"
+                  id="notebook-content"
+                  required
+                  placeholder="write something..."
+                ></textarea>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="notebook-image">
+                  image URL
+                </label>
+
+                <input
+                  id="notebook-image"
+                  type="url"
+                  placeholder="optional"
+                >
+
+              </div>
+
+
+              <label class="check-row">
+
+                <input
+                  id="notebook-published"
+                  type="checkbox"
+                  checked
+                >
+
+                publish immediately
+
+              </label>
+
+
+              <button
+                class="primary-button"
+                id="notebook-submit"
+                type="submit"
+              >
+                post to notebook
+              </button>
+
+
+              <div
+                class="message"
+                id="notebook-message"
+              ></div>
+
+            </form>
+
+          </div>
+
+
+
+          <!-- MANAGE NOTEBOOK -->
+
+          <div
+            class="mode-panel"
+            id="notebook-manage"
+          >
+
+            <h2 class="panel-title">
+              manage notebook...
+            </h2>
+
+
+            <div class="entry-picker">
+
+              <label for="notebook-picker">
+                choose an entry
+              </label>
+
+              <select id="notebook-picker">
+
+                <option value="">
+                  select a post...
+                </option>
+
+              </select>
+
+              <div
+                class="entry-state"
+                id="notebook-picker-state"
+              >
+                loading entries...
+              </div>
+
+            </div>
+
+
+            <div
+              class="manage-placeholder"
+              id="notebook-placeholder"
+            >
+              choose a notebook entry above to edit it.
+            </div>
+
+
+            <form
+              class="edit-form"
+              id="notebook-edit-form"
+            >
+
+              <div
+                class="edit-meta"
+                id="notebook-edit-meta"
+              ></div>
+
+
+              <div class="field">
+
+                <label for="notebook-edit-title">
+                  title
+                </label>
+
+                <input
+                  id="notebook-edit-title"
+                  type="text"
+                >
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="notebook-edit-content">
+                  post
+                </label>
+
+                <textarea
+                  class="notebook-content"
+                  id="notebook-edit-content"
+                  required
+                ></textarea>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="notebook-edit-image">
+                  image URL
+                </label>
+
+                <input
+                  id="notebook-edit-image"
+                  type="url"
+                >
+
+              </div>
+
+
+              <label class="check-row">
+
+                <input
+                  id="notebook-edit-published"
+                  type="checkbox"
+                >
+
+                published
+
+              </label>
+
+
+              <button
+                class="primary-button"
+                id="notebook-save"
+                type="submit"
+              >
+                save changes
+              </button>
+
+
+              <button
+                class="danger-button"
+                id="notebook-delete"
+                type="button"
+              >
+                delete entry
+              </button>
+
+
+              <div
+                class="message"
+                id="notebook-edit-message"
+              ></div>
+
+            </form>
+
+          </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================
+             WRITING
+             ===================================== -->
+
+        <section
+          class="admin-panel"
+          id="writing-panel"
+        >
+
+
+          <div class="mode-tabs">
+
+            <button
+              class="mode-button active"
+              data-group="writing"
+              data-mode="new"
+              type="button"
+            >
+              new entry
+            </button>
+
+            <button
+              class="mode-button"
+              data-group="writing"
+              data-mode="manage"
+              type="button"
+            >
+              manage existing
+            </button>
+
+          </div>
+
+
+
+          <!-- NEW WRITING -->
+
+          <div
+            class="mode-panel active"
+            id="writing-new"
+          >
+
+            <h2 class="panel-title">
+              new writing entry...
+            </h2>
+
+
+            <form id="writing-form">
+
+
+              <div class="field">
+
+                <label for="writing-title">
+                  title
+                </label>
+
+                <input
+                  id="writing-title"
+                  type="text"
+                  required
+                  placeholder="project title"
+                >
+
+              </div>
+
+
+              <div class="field-row">
+
+
+                <div class="field">
+
+                  <label for="writing-type">
+                    category
+                  </label>
+
+                  <select
+                    id="writing-type"
+                    required
+                  >
+
+                    <option value="stories">
+                      stories
+                    </option>
+
+                    <option value="scripts">
+                      scripts
+                    </option>
+
+                    <option value="fan works">
+                      fan works
+                    </option>
+
+                    <option value="concepts">
+                      concepts
+                    </option>
+
+                    <option value="misc">
+                      misc
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <div class="field">
+
+                  <label for="writing-status">
+                    status
+                  </label>
+
+                  <select id="writing-status">
+
+                    <option value="in progress">
+                      in progress
+                    </option>
+
+                    <option value="complete">
+                      complete
+                    </option>
+
+                    <option value="on hold">
+                      on hold
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="writing-summary">
+                  summary
+                </label>
+
+                <textarea
+                  class="writing-summary"
+                  id="writing-summary"
+                  placeholder="a short description for the archive page..."
+                ></textarea>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="writing-cover">
+                  cover image URL
+                </label>
+
+                <input
+                  id="writing-cover"
+                  type="url"
+                  placeholder="optional"
+                >
+
+              </div>
+
+
+              <div class="form-divider"></div>
+
+
+              <div class="field">
+
+                <label for="writing-content">
+                  writing
+                </label>
+
+                <textarea
+                  class="writing-content"
+                  id="writing-content"
+                  required
+                  placeholder="start writing..."
+                ></textarea>
+
+              </div>
+
+
+              <label class="check-row">
+
+                <input
+                  id="writing-published"
+                  type="checkbox"
+                  checked
+                >
+
+                publish immediately
+
+              </label>
+
+
+              <button
+                class="primary-button"
+                id="writing-submit"
+                type="submit"
+              >
+                add to writing archive
+              </button>
+
+
+              <div
+                class="message"
+                id="writing-message"
+              ></div>
+
+
+            </form>
+
+          </div>
+
+
+
+          <!-- MANAGE WRITING -->
+
+          <div
+            class="mode-panel"
+            id="writing-manage"
+          >
+
+            <h2 class="panel-title">
+              manage writing...
+            </h2>
+
+
+            <div class="entry-picker">
+
+              <label for="writing-picker">
+                choose a project
+              </label>
+
+              <select id="writing-picker">
+
+                <option value="">
+                  select a project...
+                </option>
+
+              </select>
+
+              <div
+                class="entry-state"
+                id="writing-picker-state"
+              >
+                loading projects...
+              </div>
+
+            </div>
+
+
+            <div
+              class="manage-placeholder"
+              id="writing-placeholder"
+            >
+              choose a writing entry above to edit it.
+            </div>
+
+
+            <form
+              class="edit-form"
+              id="writing-edit-form"
+            >
+
+              <div
+                class="edit-meta"
+                id="writing-edit-meta"
+              ></div>
+
+
+              <div class="field">
+
+                <label for="writing-edit-title">
+                  title
+                </label>
+
+                <input
+                  id="writing-edit-title"
+                  type="text"
+                  required
+                >
+
+              </div>
+
+
+              <div class="field-row">
+
+
+                <div class="field">
+
+                  <label for="writing-edit-type">
+                    category
+                  </label>
+
+                  <select id="writing-edit-type">
+
+                    <option value="stories">
+                      stories
+                    </option>
+
+                    <option value="scripts">
+                      scripts
+                    </option>
+
+                    <option value="fan works">
+                      fan works
+                    </option>
+
+                    <option value="concepts">
+                      concepts
+                    </option>
+
+                    <option value="misc">
+                      misc
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <div class="field">
+
+                  <label for="writing-edit-status">
+                    status
+                  </label>
+
+                  <select id="writing-edit-status">
+
+                    <option value="in progress">
+                      in progress
+                    </option>
+
+                    <option value="complete">
+                      complete
+                    </option>
+
+                    <option value="on hold">
+                      on hold
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="writing-edit-summary">
+                  summary
+                </label>
+
+                <textarea
+                  class="writing-summary"
+                  id="writing-edit-summary"
+                ></textarea>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="writing-edit-cover">
+                  cover image URL
+                </label>
+
+                <input
+                  id="writing-edit-cover"
+                  type="url"
+                >
+
+              </div>
+
+
+              <div class="form-divider"></div>
+
+
+              <div class="field">
+
+                <label for="writing-edit-content">
+                  writing
+                </label>
+
+                <textarea
+                  class="writing-content"
+                  id="writing-edit-content"
+                  required
+                ></textarea>
+
+              </div>
+
+
+              <label class="check-row">
+
+                <input
+                  id="writing-edit-published"
+                  type="checkbox"
+                >
+
+                published
+
+              </label>
+
+
+              <button
+                class="primary-button"
+                id="writing-save"
+                type="submit"
+              >
+                save changes
+              </button>
+
+
+              <button
+                class="danger-button"
+                id="writing-delete"
+                type="button"
+              >
+                delete project
+              </button>
+
+
+              <div
+                class="message"
+                id="writing-edit-message"
+              ></div>
+
+
+            </form>
+
+          </div>
+
+
+        </section>
+
+
+      </section>
+
+
+    </main>
+
+  </div>
+
+
+  <script>
+
+
+    /* ==============================
+       SUPABASE
+       ============================== */
+
+    const SUPABASE_URL =
+      "https://cadljjvyicpgiwlfyigr.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_PBBvFxgfK9w3U5et1_sM1Q_sUBAtdJp";
+
+    const db =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    let notebookEntries = [];
+    let writingEntries = [];
+
+    let selectedNotebookId = null;
+    let selectedWritingId = null;
+
+
+    /* ==============================
+       SESSION
+       ============================== */
+
+    async function checkSession() {
+
+      const {
+        data: { session }
+      } =
+        await db.auth.getSession();
+
+
+      if (session) {
+
+        showDashboard();
+
+        await Promise.all([
+          loadNotebookEntries(),
+          loadWritingEntries()
+        ]);
+
+      }
+
+      else {
+
+        showLogin();
+
+      }
+
+    }
+
+
+    function showLogin() {
+
+      document
+        .getElementById("login-panel")
+        .style.display =
+        "block";
+
+      document
+        .getElementById("dashboard")
+        .style.display =
+        "none";
+
+    }
+
+
+    function showDashboard() {
+
+      document
+        .getElementById("login-panel")
+        .style.display =
+        "none";
+
+      document
+        .getElementById("dashboard")
+        .style.display =
+        "block";
+
+    }
+
+
+    /* ==============================
+       LOGIN
+       ============================== */
+
+    document
+      .getElementById("login-form")
+      .addEventListener(
+        "submit",
+        async event => {
+
+          event.preventDefault();
+
+          const message =
+            document.getElementById(
+              "login-message"
+            );
+
+          message.textContent =
+            "logging in...";
+
+          message.className =
+            "message";
+
+
+          const email =
+            document
+              .getElementById("email")
+              .value
+              .trim();
+
+          const password =
+            document
+              .getElementById("password")
+              .value;
+
+
+          const { error } =
+            await db.auth
+              .signInWithPassword({
+                email,
+                password
+              });
+
+
+          if (error) {
+
+            message.textContent =
+              error.message;
+
+            message.className =
+              "message error";
+
+            return;
+
+          }
+
+
+          message.textContent = "";
+
+          showDashboard();
+
+          await Promise.all([
+            loadNotebookEntries(),
+            loadWritingEntries()
+          ]);
+
+        }
+      );
+
+
+    /* ==============================
+       LOGOUT
+       ============================== */
+
+    document
+      .getElementById("logout-button")
+      .addEventListener(
+        "click",
+        async () => {
+
+          await db.auth.signOut();
+
+          showLogin();
+
+        }
+      );
+
+
+    /* ==============================
+       MAIN TABS
+       ============================== */
+
+    document
+      .querySelectorAll(".tab-button")
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const tab =
+                button.dataset.tab;
+
+
+              document
+                .querySelectorAll(
+                  ".tab-button"
+                )
+                .forEach(
+                  other => {
+
+                    other.classList.toggle(
+                      "active",
+                      other === button
+                    );
+
+                  }
+                );
+
+
+              document
+                .querySelectorAll(
+                  ".admin-panel"
+                )
+                .forEach(
+                  panel => {
+
+                    panel.classList.remove(
+                      "active"
+                    );
+
+                  }
+                );
+
+
+              document
+                .getElementById(
+                  `${tab}-panel`
+                )
+                .classList
+                .add("active");
+
+            }
+          );
+
+        }
+      );
+
+
+    /* ==============================
+       NEW / MANAGE TABS
+       ============================== */
+
+    document
+      .querySelectorAll(".mode-button")
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const group =
+                button.dataset.group;
+
+              const mode =
+                button.dataset.mode;
+
+
+              document
+                .querySelectorAll(
+                  `.mode-button[data-group="${group}"]`
+                )
+                .forEach(
+                  other => {
+
+                    other.classList.toggle(
+                      "active",
+                      other === button
+                    );
+
+                  }
+                );
+
+
+              document
+                .getElementById(
+                  `${group}-new`
+                )
+                .classList
+                .toggle(
+                  "active",
+                  mode === "new"
+                );
+
+
+              document
+                .getElementById(
+                  `${group}-manage`
+                )
+                .classList
+                .toggle(
+                  "active",
+                  mode === "manage"
+                );
+
+            }
+          );
+
+        }
+      );
+
+
+    /* ==============================
+       SLUG
+       ============================== */
+
+    function makeSlug(title) {
+
+      const base =
+        (
+          title ||
+          "entry"
+        )
+
+        .toLowerCase()
+
+        .trim()
+
+        .replace(
+          /[^a-z0-9]+/g,
+          "-"
+        )
+
+        .replace(
+          /^-|-$/g,
+          ""
+        );
+
+
+      return (
+        base +
+        "-" +
+        Date.now()
+      );
+
+    }
+
+
+    /* ==============================
+       NEW NOTEBOOK ENTRY
+       ============================== */
+
+    document
+      .getElementById("notebook-form")
+      .addEventListener(
+        "submit",
+        async event => {
+
+          event.preventDefault();
+
+
+          const button =
+            document.getElementById(
+              "notebook-submit"
+            );
+
+          const message =
+            document.getElementById(
+              "notebook-message"
+            );
+
+
+          const title =
+            document
+              .getElementById(
+                "notebook-title"
+              )
+              .value
+              .trim();
+
+          const content =
+            document
+              .getElementById(
+                "notebook-content"
+              )
+              .value
+              .trim();
+
+          const imageURL =
+            document
+              .getElementById(
+                "notebook-image"
+              )
+              .value
+              .trim();
+
+          const published =
+            document
+              .getElementById(
+                "notebook-published"
+              )
+              .checked;
+
+
+          button.disabled = true;
+          button.textContent = "posting...";
+
+
+          const { error } =
+            await db
+              .from("notebook_entries")
+              .insert({
+
+                slug:
+                  makeSlug(
+                    title ||
+                    "notebook-entry"
+                  ),
+
+                title:
+                  title || null,
+
+                content,
+
+                image_url:
+                  imageURL || null,
+
+                published
+
+              });
+
+
+          button.disabled = false;
+          button.textContent =
+            "post to notebook";
+
+
+          if (error) {
+
+            console.error(error);
+
+            message.textContent =
+              "couldn't post: " +
+              error.message;
+
+            message.className =
+              "message error";
+
+            return;
+
+          }
+
+
+          message.textContent =
+            published
+              ? "posted successfully :)"
+              : "saved as a draft :)";
+
+          message.className =
+            "message success";
+
+
+          document
+            .getElementById(
+              "notebook-form"
+            )
+            .reset();
+
+          document
+            .getElementById(
+              "notebook-published"
+            )
+            .checked = true;
+
+
+          await loadNotebookEntries();
+
+        }
+      );
+
+
+    /* ==============================
+       NEW WRITING ENTRY
+       ============================== */
+
+    document
+      .getElementById("writing-form")
+      .addEventListener(
+        "submit",
+        async event => {
+
+          event.preventDefault();
+
+
+          const button =
+            document.getElementById(
+              "writing-submit"
+            );
+
+          const message =
+            document.getElementById(
+              "writing-message"
+            );
+
+
+          const title =
+            document
+              .getElementById(
+                "writing-title"
+              )
+              .value
+              .trim();
+
+          const projectType =
+            document
+              .getElementById(
+                "writing-type"
+              )
+              .value;
+
+          const status =
+            document
+              .getElementById(
+                "writing-status"
+              )
+              .value;
+
+          const summary =
+            document
+              .getElementById(
+                "writing-summary"
+              )
+              .value
+              .trim();
+
+          const coverURL =
+            document
+              .getElementById(
+                "writing-cover"
+              )
+              .value
+              .trim();
+
+          const content =
+            document
+              .getElementById(
+                "writing-content"
+              )
+              .value
+              .trim();
+
+          const published =
+            document
+              .getElementById(
+                "writing-published"
+              )
+              .checked;
+
+
+          button.disabled = true;
+          button.textContent = "saving...";
+
+
+          const { error } =
+            await db
+              .from("writing")
+              .insert({
+
+                slug:
+                  makeSlug(title),
+
+                title,
+
+                project_type:
+                  projectType,
+
+                summary:
+                  summary || null,
+
+                content,
+
+                status,
+
+                cover_url:
+                  coverURL || null,
+
+                published
+
+              });
+
+
+          button.disabled = false;
+          button.textContent =
+            "add to writing archive";
+
+
+          if (error) {
+
+            console.error(error);
+
+            message.textContent =
+              "couldn't save: " +
+              error.message;
+
+            message.className =
+              "message error";
+
+            return;
+
+          }
+
+
+          message.textContent =
+            published
+              ? "added to the archive :)"
+              : "saved as a draft :)";
+
+          message.className =
+            "message success";
+
+
+          document
+            .getElementById(
+              "writing-form"
+            )
+            .reset();
+
+
+          document
+            .getElementById(
+              "writing-published"
+            )
+            .checked = true;
+
+
+          document
+            .getElementById(
+              "writing-type"
+            )
+            .value = "stories";
+
+
+          document
+            .getElementById(
+              "writing-status"
+            )
+            .value = "in progress";
+
+
+          await loadWritingEntries();
+
+        }
+      );
+
+
+    /* ==============================
+       LOAD NOTEBOOK ENTRIES
+       ============================== */
+
+    async function loadNotebookEntries() {
+
+      const picker =
+        document.getElementById(
+          "notebook-picker"
+        );
+
+      const state =
+        document.getElementById(
+          "notebook-picker-state"
+        );
+
+
+      const {
+        data,
+        error
+      } =
+        await db
+          .from("notebook_entries")
+          .select(`
+            id,
+            slug,
+            title,
+            content,
+            image_url,
+            published,
+            created_at,
+            updated_at
+          `)
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
+
+
+      if (error) {
+
+        console.error(error);
+
+        state.textContent =
+          "couldn't load notebook entries.";
+
+        return;
+
+      }
+
+
+      notebookEntries =
+        data || [];
+
+
+      picker.innerHTML =
+        `
+          <option value="">
+            select a post...
+          </option>
+        `;
+
+
+      notebookEntries.forEach(
+        entry => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+          option.value =
+            entry.id;
+
+          option.textContent =
+            `${
+              entry.title ||
+              "untitled entry"
+            } ${
+              entry.published
+                ? ""
+                : "— draft"
+            }`;
+
+          picker.appendChild(
+            option
+          );
+
+        }
+      );
+
+
+      state.textContent =
+        `${notebookEntries.length} entries`;
+
+    }
+
+
+    /* ==============================
+       SELECT NOTEBOOK ENTRY
+       ============================== */
+
+    document
+      .getElementById(
+        "notebook-picker"
+      )
+      .addEventListener(
+        "change",
+        event => {
+
+          selectedNotebookId =
+            event.target.value ||
+            null;
+
+
+          const form =
+            document.getElementById(
+              "notebook-edit-form"
+            );
+
+          const placeholder =
+            document.getElementById(
+              "notebook-placeholder"
+            );
+
+
+          if (!selectedNotebookId) {
+
+            form.classList.remove(
+              "visible"
+            );
+
+            placeholder.style.display =
+              "block";
+
+            return;
+
+          }
+
+
+          const entry =
+            notebookEntries.find(
+              item =>
+                item.id ===
+                selectedNotebookId
+            );
+
+
+          if (!entry) {
+            return;
+          }
+
+
+          document
+            .getElementById(
+              "notebook-edit-title"
+            )
+            .value =
+            entry.title || "";
+
+
+          document
+            .getElementById(
+              "notebook-edit-content"
+            )
+            .value =
+            entry.content || "";
+
+
+          document
+            .getElementById(
+              "notebook-edit-image"
+            )
+            .value =
+            entry.image_url || "";
+
+
+          document
+            .getElementById(
+              "notebook-edit-published"
+            )
+            .checked =
+            entry.published;
+
+
+          document
+            .getElementById(
+              "notebook-edit-meta"
+            )
+            .textContent =
+            `slug: ${entry.slug}`;
+
+
+          placeholder.style.display =
+            "none";
+
+          form.classList.add(
+            "visible"
+          );
+
+        }
+      );
+
+
+    /* ==============================
+       UPDATE NOTEBOOK ENTRY
+       ============================== */
+
+    document
+      .getElementById(
+        "notebook-edit-form"
+      )
+      .addEventListener(
+        "submit",
+        async event => {
+
+          event.preventDefault();
+
+
+          if (!selectedNotebookId) {
+            return;
+          }
+
+
+          const button =
+            document.getElementById(
+              "notebook-save"
+            );
+
+          const message =
+            document.getElementById(
+              "notebook-edit-message"
+            );
+
+
+          button.disabled = true;
+          button.textContent =
+            "saving...";
+
+
+          const {
+            error
+          } =
+            await db
+              .from("notebook_entries")
+              .update({
+
+                title:
+                  document
+                    .getElementById(
+                      "notebook-edit-title"
+                    )
+                    .value
+                    .trim() ||
+                  null,
+
+                content:
+                  document
+                    .getElementById(
+                      "notebook-edit-content"
+                    )
+                    .value
+                    .trim(),
+
+                image_url:
+                  document
+                    .getElementById(
+                      "notebook-edit-image"
+                    )
+                    .value
+                    .trim() ||
+                  null,
+
+                published:
+                  document
+                    .getElementById(
+                      "notebook-edit-published"
+                    )
+                    .checked,
+
+                updated_at:
+                  new Date()
+                    .toISOString()
+
+              })
+              .eq(
+                "id",
+                selectedNotebookId
+              );
+
+
+          button.disabled = false;
+          button.textContent =
+            "save changes";
+
+
+          if (error) {
+
+            console.error(error);
+
+            message.textContent =
+              "couldn't save: " +
+              error.message;
+
+            message.className =
+              "message error";
+
+            return;
+
+          }
+
+
+          message.textContent =
+            "changes saved :)";
+
+          message.className =
+            "message success";
+
+
+          await loadNotebookEntries();
+
+        }
+      );
+
+
+    /* ==============================
+       DELETE NOTEBOOK ENTRY
+       ============================== */
+
+    document
+      .getElementById(
+        "notebook-delete"
+      )
+      .addEventListener(
+        "click",
+        async () => {
+
+          if (!selectedNotebookId) {
+            return;
+          }
+
+
+          const confirmed =
+            window.confirm(
+              "Delete this notebook entry permanently?"
+            );
+
+
+          if (!confirmed) {
+            return;
+          }
+
+
+          const {
+            error
+          } =
+            await db
+              .from("notebook_entries")
+              .delete()
+              .eq(
+                "id",
+                selectedNotebookId
+              );
+
+
+          if (error) {
+
+            alert(
+              "Couldn't delete entry: " +
+              error.message
+            );
+
+            return;
+
+          }
+
+
+          selectedNotebookId =
+            null;
+
+
+          document
+            .getElementById(
+              "notebook-edit-form"
+            )
+            .classList
+            .remove("visible");
+
+
+          document
+            .getElementById(
+              "notebook-placeholder"
+            )
+            .style.display =
+            "block";
+
+
+          await loadNotebookEntries();
+
+        }
+      );
+
+
+    /* ==============================
+       LOAD WRITING ENTRIES
+       ============================== */
+
+    async function loadWritingEntries() {
+
+      const picker =
+        document.getElementById(
+          "writing-picker"
+        );
+
+      const state =
+        document.getElementById(
+          "writing-picker-state"
+        );
+
+
+      const {
+        data,
+        error
+      } =
+        await db
+          .from("writing")
+          .select(`
+            id,
+            slug,
+            title,
+            project_type,
+            summary,
+            content,
+            status,
+            cover_url,
+            published,
+            created_at,
+            updated_at
+          `)
+          .order(
+            "updated_at",
+            {
+              ascending: false
+            }
+          );
+
+
+      if (error) {
+
+        console.error(error);
+
+        state.textContent =
+          "couldn't load writing.";
+
+        return;
+
+      }
+
+
+      writingEntries =
+        data || [];
+
+
+      picker.innerHTML =
+        `
+          <option value="">
+            select a project...
+          </option>
+        `;
+
+
+      writingEntries.forEach(
+        entry => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+          option.value =
+            entry.id;
+
+          option.textContent =
+            `${
+              entry.title
+            } ${
+              entry.published
+                ? ""
+                : "— draft"
+            }`;
+
+          picker.appendChild(
+            option
+          );
+
+        }
+      );
+
+
+      state.textContent =
+        `${writingEntries.length} projects`;
+
+    }
+
+
+    /* ==============================
+       SELECT WRITING ENTRY
+       ============================== */
+
+    document
+      .getElementById(
+        "writing-picker"
+      )
+      .addEventListener(
+        "change",
+        event => {
+
+          selectedWritingId =
+            event.target.value ||
+            null;
+
+
+          const form =
+            document.getElementById(
+              "writing-edit-form"
+            );
+
+          const placeholder =
+            document.getElementById(
+              "writing-placeholder"
+            );
+
+
+          if (!selectedWritingId) {
+
+            form.classList.remove(
+              "visible"
+            );
+
+            placeholder.style.display =
+              "block";
+
+            return;
+
+          }
+
+
+          const entry =
+            writingEntries.find(
+              item =>
+                item.id ===
+                selectedWritingId
+            );
+
+
+          if (!entry) {
+            return;
+          }
+
+
+          document
+            .getElementById(
+              "writing-edit-title"
+            )
+            .value =
+            entry.title || "";
+
+
+          document
+            .getElementById(
+              "writing-edit-type"
+            )
+            .value =
+            entry.project_type ||
+            "misc";
+
+
+          document
+            .getElementById(
+              "writing-edit-status"
+            )
+            .value =
+            entry.status ||
+            "in progress";
+
+
+          document
+            .getElementById(
+              "writing-edit-summary"
+            )
+            .value =
+            entry.summary || "";
+
+
+          document
+            .getElementById(
+              "writing-edit-cover"
+            )
+            .value =
+            entry.cover_url || "";
+
+
+          document
+            .getElementById(
+              "writing-edit-content"
+            )
+            .value =
+            entry.content || "";
+
+
+          document
+            .getElementById(
+              "writing-edit-published"
+            )
+            .checked =
+            entry.published;
+
+
+          document
+            .getElementById(
+              "writing-edit-meta"
+            )
+            .innerHTML =
+            `
+              slug: ${escapeHTML(entry.slug)}
+              <br>
+              <a
+                href="project.html?slug=${encodeURIComponent(entry.slug)}"
+                target="_blank"
+              >
+                view project →
+              </a>
+            `;
+
+
+          placeholder.style.display =
+            "none";
+
+          form.classList.add(
+            "visible"
+          );
+
+        }
+      );
+
+
+    /* ==============================
+       UPDATE WRITING ENTRY
+       ============================== */
+
+    document
+      .getElementById(
+        "writing-edit-form"
+      )
+      .addEventListener(
+        "submit",
+        async event => {
+
+          event.preventDefault();
+
+
+          if (!selectedWritingId) {
+            return;
+          }
+
+
+          const button =
+            document.getElementById(
+              "writing-save"
+            );
+
+          const message =
+            document.getElementById(
+              "writing-edit-message"
+            );
+
+
+          button.disabled = true;
+          button.textContent =
+            "saving...";
+
+
+          const {
+            error
+          } =
+            await db
+              .from("writing")
+              .update({
+
+                title:
+                  document
+                    .getElementById(
+                      "writing-edit-title"
+                    )
+                    .value
+                    .trim(),
+
+                project_type:
+                  document
+                    .getElementById(
+                      "writing-edit-type"
+                    )
+                    .value,
+
+                status:
+                  document
+                    .getElementById(
+                      "writing-edit-status"
+                    )
+                    .value,
+
+                summary:
+                  document
+                    .getElementById(
+                      "writing-edit-summary"
+                    )
+                    .value
+                    .trim() ||
+                  null,
+
+                cover_url:
+                  document
+                    .getElementById(
+                      "writing-edit-cover"
+                    )
+                    .value
+                    .trim() ||
+                  null,
+
+                content:
+                  document
+                    .getElementById(
+                      "writing-edit-content"
+                    )
+                    .value
+                    .trim(),
+
+                published:
+                  document
+                    .getElementById(
+                      "writing-edit-published"
+                    )
+                    .checked,
+
+                updated_at:
+                  new Date()
+                    .toISOString()
+
+              })
+              .eq(
+                "id",
+                selectedWritingId
+              );
+
+
+          button.disabled = false;
+          button.textContent =
+            "save changes";
+
+
+          if (error) {
+
+            console.error(error);
+
+            message.textContent =
+              "couldn't save: " +
+              error.message;
+
+            message.className =
+              "message error";
+
+            return;
+
+          }
+
+
+          message.textContent =
+            "changes saved :)";
+
+          message.className =
+            "message success";
+
+
+          await loadWritingEntries();
+
+        }
+      );
+
+
+    /* ==============================
+       DELETE WRITING ENTRY
+       ============================== */
+
+    document
+      .getElementById(
+        "writing-delete"
+      )
+      .addEventListener(
+        "click",
+        async () => {
+
+          if (!selectedWritingId) {
+            return;
+          }
+
+
+          const confirmed =
+            window.confirm(
+              "Delete this writing project permanently?"
+            );
+
+
+          if (!confirmed) {
+            return;
+          }
+
+
+          const {
+            error
+          } =
+            await db
+              .from("writing")
+              .delete()
+              .eq(
+                "id",
+                selectedWritingId
+              );
+
+
+          if (error) {
+
+            alert(
+              "Couldn't delete project: " +
+              error.message
+            );
+
+            return;
+
+          }
+
+
+          selectedWritingId =
+            null;
+
+
+          document
+            .getElementById(
+              "writing-edit-form"
+            )
+            .classList
+            .remove("visible");
+
+
+          document
+            .getElementById(
+              "writing-placeholder"
+            )
+            .style.display =
+            "block";
+
+
+          await loadWritingEntries();
+
+        }
+      );
+
+
+    /* ==============================
+       ESCAPE HTML
+       ============================== */
+
+    function escapeHTML(value) {
+
+      return String(value)
+
+        .replaceAll("&", "&amp;")
+
+        .replaceAll("<", "&lt;")
+
+        .replaceAll(">", "&gt;")
+
+        .replaceAll('"', "&quot;")
+
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
+
+    }
+
+
+    /* ==============================
+       START
+       ============================== */
+
+    checkSession();
+
+  </script>
+
+</body>
+</html>
