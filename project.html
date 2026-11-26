@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en-GB">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Still Raining — Writing</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap"
+    rel="stylesheet"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <style>
+
+    :root {
+      --background: #37312e;
+      --panel: rgba(20,21,20,.96);
+      --line: rgba(220,222,216,.16);
+      --text: #dcdad4;
+      --muted: #979993;
+      --dim: #6d706b;
+      --max-width: 1160px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+
+      min-height: 100vh;
+
+      background:
+        var(--background);
+
+      color:
+        var(--text);
+
+      font-family:
+        "Courier Prime",
+        monospace;
+
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+
+    .site-shell {
+      width:
+        min(
+          calc(100% - 42px),
+          var(--max-width)
+        );
+
+      margin: 34px auto;
+
+      background:
+        var(--panel);
+
+      border:
+        1px solid
+        rgba(222,224,217,.24);
+
+      box-shadow:
+        0 22px 60px
+        rgba(0,0,0,.34);
+    }
+
+
+    /* HEADER */
+
+    .site-header {
+      padding:
+        18px 30px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      display: grid;
+
+      grid-template-columns:
+        1fr auto;
+
+      gap: 32px;
+
+      align-items: center;
+    }
+
+    .brand-title {
+      margin: 0;
+
+      font-family:
+        "Special Elite",
+        monospace;
+
+      font-size:
+        clamp(1.35rem, 2vw, 2rem);
+
+      font-weight: 400;
+
+      color: #eceae4;
+    }
+
+    .brand-subtitle {
+      display: block;
+
+      margin-top: 2px;
+
+      color: #aaa9a2;
+
+      font-size: .72rem;
+
+      letter-spacing: .24em;
+    }
+
+    .main-nav {
+      display: flex;
+
+      color: #c7c5be;
+
+      font-size: .78rem;
+
+      text-transform: uppercase;
+
+      letter-spacing: .08em;
+    }
+
+    .main-nav a {
+      padding: 7px 12px;
+    }
+
+    .main-nav a + a::before {
+      content: "|";
+
+      color: #777a76;
+
+      margin-right: 24px;
+      margin-left: -12px;
+    }
+
+
+    /* PROJECT */
+
+    .project-page {
+      width:
+        min(100%, 850px);
+
+      margin: 0 auto;
+
+      padding:
+        32px 30px 55px;
+    }
+
+    .back-link {
+      display: inline-block;
+
+      margin-bottom: 25px;
+
+      color: #7d807b;
+
+      font-size: .72rem;
+    }
+
+    .back-link:hover {
+      color: #c8c7c0;
+    }
+
+    .project-type {
+      color:
+        #777a75;
+
+      font-size:
+        .68rem;
+
+      text-transform:
+        uppercase;
+
+      letter-spacing:
+        .12em;
+    }
+
+    .project-title {
+      margin:
+        5px 0 8px;
+
+      font-family:
+        "Special Elite",
+        monospace;
+
+      font-size:
+        clamp(2rem, 5vw, 3.4rem);
+
+      font-weight: 400;
+
+      line-height: 1.15;
+
+      color:
+        #ece9e2;
+    }
+
+    .project-status {
+      color:
+        #777a75;
+
+      font-size:
+        .7rem;
+    }
+
+    .project-cover {
+      width: 100%;
+
+      max-height:
+        500px;
+
+      object-fit: cover;
+
+      margin:
+        28px 0;
+
+      border:
+        1px solid
+        rgba(220,222,216,.15);
+
+      filter:
+        saturate(78%)
+        brightness(90%);
+    }
+
+    .project-summary {
+      margin:
+        0 0 30px;
+
+      padding:
+        18px 20px;
+
+      border-left:
+        2px solid
+        rgba(220,222,216,.18);
+
+      color:
+        #969892;
+
+      font-size:
+        .84rem;
+
+      font-style:
+        italic;
+    }
+
+    .project-content {
+      color:
+        #c0bfb8;
+
+      font-size:
+        .9rem;
+
+      line-height:
+        1.8;
+    }
+
+    .project-content p {
+      margin:
+        0 0 1.4em;
+    }
+
+    .project-ending {
+      margin-top:
+        45px;
+
+      padding-top:
+        14px;
+
+      border-top:
+        1px solid
+        var(--line);
+
+      color:
+        #696c67;
+
+      font-size:
+        .66rem;
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      gap: 20px;
+    }
+
+    .loading {
+      padding:
+        50px 0;
+
+      color:
+        var(--muted);
+    }
+
+
+    @media (max-width: 700px) {
+
+      .site-shell {
+        width: 100%;
+        margin: 0;
+
+        border-left: 0;
+        border-right: 0;
+      }
+
+      .site-header {
+        grid-template-columns:
+          1fr;
+
+        padding:
+          18px 15px;
+      }
+
+      .main-nav {
+        flex-wrap: wrap;
+      }
+
+      .project-page {
+        padding:
+          28px 16px 45px;
+      }
+
+      .project-ending {
+        flex-direction: column;
+      }
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <main class="site-shell">
+
+
+    <header class="site-header">
+
+      <a href="index.html">
+
+        <h1 class="brand-title">
+          Still Raining
+        </h1>
+
+        <span class="brand-subtitle">
+          a personal writing archive
+        </span>
+
+      </a>
+
+
+      <nav class="main-nav">
+
+        <a href="index.html">
+          Home
+        </a>
+
+        <a href="writing.html">
+          Writing
+        </a>
+
+        <a href="notebook.html">
+          Notebook
+        </a>
+
+        <a href="about.html">
+          About
+        </a>
+
+      </nav>
+
+    </header>
+
+
+    <article
+      class="project-page"
+      id="project"
+    >
+
+      <p class="loading">
+        opening project...
+      </p>
+
+    </article>
+
+
+  </main>
+
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://cadljjvyicpgiwlfyigr.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_PBBvFxgfK9w3U5et1_sM1Q_sUBAtdJp";
+
+    const db =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    function escapeHTML(value) {
+
+      return String(value)
+
+        .replaceAll(
+          "&",
+          "&amp;"
+        )
+
+        .replaceAll(
+          "<",
+          "&lt;"
+        )
+
+        .replaceAll(
+          ">",
+          "&gt;"
+        )
+
+        .replaceAll(
+          '"',
+          "&quot;"
+        )
+
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
+
+    }
+
+
+    function formatContent(value) {
+
+      const safe =
+        escapeHTML(
+          value || ""
+        );
+
+      return safe
+
+        .split(/\n\s*\n/)
+
+        .map(
+          paragraph =>
+            `<p>${
+              paragraph.replaceAll(
+                "\n",
+                "<br>"
+              )
+            }</p>`
+        )
+
+        .join("");
+
+    }
+
+
+    function formatDate(value) {
+
+      if (!value) return "—";
+
+      return new Intl.DateTimeFormat(
+        "en-GB",
+        {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }
+      )
+      .format(
+        new Date(value)
+      )
+      .toLowerCase();
+
+    }
+
+
+    async function loadProject() {
+
+      const container =
+        document.getElementById(
+          "project"
+        );
+
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+
+      const slug =
+        params.get("slug");
+
+
+      if (!slug) {
+
+        container.innerHTML = `
+          <a
+            class="back-link"
+            href="writing.html"
+          >
+            ← back to archive
+          </a>
+
+          <p class="loading">
+            no project specified.
+          </p>
+        `;
+
+        return;
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await db
+
+          .from("writing")
+
+          .select(`
+            title,
+            project_type,
+            summary,
+            content,
+            status,
+            cover_url,
+            updated_at
+          `)
+
+          .eq(
+            "slug",
+            slug
+          )
+
+          .eq(
+            "published",
+            true
+          )
+
+          .single();
+
+
+      if (
+        error ||
+        !data
+      ) {
+
+        container.innerHTML = `
+          <a
+            class="back-link"
+            href="writing.html"
+          >
+            ← back to archive
+          </a>
+
+          <p class="loading">
+            couldn't find this project.
+          </p>
+        `;
+
+        return;
+      }
+
+
+      document.title =
+        `${data.title} — Still Raining`;
+
+
+      const cover =
+        data.cover_url
+          ? `
+            <img
+              class="project-cover"
+              src="${escapeHTML(data.cover_url)}"
+              alt=""
+            >
+          `
+          : "";
+
+
+      const summary =
+        data.summary
+          ? `
+            <div class="project-summary">
+              ${escapeHTML(data.summary)}
+            </div>
+          `
+          : "";
+
+
+      container.innerHTML = `
+
+        <a
+          class="back-link"
+          href="writing.html"
+        >
+          ← back to archive
+        </a>
+
+
+        <div class="project-type">
+          ${
+            escapeHTML(
+              data.project_type ||
+              "writing"
+            )
+          }
+        </div>
+
+
+        <h2 class="project-title">
+          ${escapeHTML(data.title)}
+        </h2>
+
+
+        <div class="project-status">
+          ${
+            escapeHTML(
+              data.status ||
+              "in progress"
+            )
+          }
+        </div>
+
+
+        ${cover}
+
+
+        ${summary}
+
+
+        <div class="project-content">
+
+          ${
+            formatContent(
+              data.content
+            )
+          }
+
+        </div>
+
+
+        <div class="project-ending">
+
+          <span>
+            last updated
+            ${formatDate(data.updated_at)}
+          </span>
+
+          <a href="writing.html">
+            return to archive →
+          </a>
+
+        </div>
+
+      `;
+
+    }
+
+
+    loadProject();
+
+  </script>
+
+</body>
+
+</html>
